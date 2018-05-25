@@ -1,0 +1,159 @@
+<?php
+
+module_load_include('inc', 'ecl', 'functions');
+module_load_include('inc', 'ecl', 'forms');
+
+/**
+ * Implements hook_permission().
+ */
+function ecl_permission() {
+  return array(
+    'Modify English College London settings' =>  array(
+      'title' => t('Modify English College London settings'),
+      'description' => t('Administer English College London settings.'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu().
+ */
+function ecl_menu() {
+
+  $items = array();
+
+  $items['admin/settings/ecl'] = array(
+    'title' => 'English College London',
+    'description' => 'English College London module overview',
+    'page arguments' => array('ecl_overview'),
+    'access arguments' => array('Modify English College London settings'),
+    'file' => 'system.admin.inc',
+    'file path' => drupal_get_path('module', 'system'),
+  );
+
+  $items['admin/settings/ecl/options'] = array(
+    'title' => 'Options',
+    'weight' => 0,
+    'description' => 'English College London module options',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ecl_admin'),
+    'access arguments' => array('Modify English College London settings'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/settings/ecl/coursebookings'] = array(
+    'title' => 'Bookings',
+    'weight' => 1,
+    'description' => 'English College London Show Course Bookings',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ecl_show_course_bookings'),
+    'access arguments' => array('Modify English College London settings'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/settings/ecl/coursebookings/%'] = array(
+    'title' => 'Course Booking',
+    'description' => 'English College London Show Course Booking Information',
+    'page callback' => 'ecl_show_course_booking_details',
+    'page arguments' => array(4),
+    'access arguments' => array('Modify English College London settings'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['admin/settings/ecl/coursebookings/%/payment'] = array(
+    'title' => 'Make Course Booking Payment',
+    'description' => 'English College London Make Course Booking Payment',
+    'page callback' => 'ecl_make_course_booking_payment',
+    'page arguments' => array(4),
+    'access arguments' => array('Modify English College London settings'),
+    'type' => MENU_CALLBACK,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_admin().
+ */
+function ecl_admin() {
+
+  $form = array();
+
+
+  $form['online_payment_options'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Online payment options'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+
+  $form['online_payment_options']['online_payment_functionality'] = array(
+    '#type' => 'select',
+    '#title' => t('Online payment functionality'),
+    '#options' => array(
+      0 => t('Disabled'),
+      1 => t('Enabled'),
+    ),
+    '#default_value' => variable_get('online_payment_functionality', 0),
+    '#description' => t('Whether or not the payment functionality is enabled.'),
+    '#required' => TRUE,
+  );
+
+  $form['worldpay_options'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Worldpay options'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+
+  $form['worldpay_options']['worldpay_mode'] = array(
+    '#type' => 'select',
+    '#title' => t('Worldpay mode'),
+    '#options' => array(
+      0 => t('Test'),
+      1 => t('Live'),
+    ),
+    '#default_value' => variable_get('worldpay_mode', 0),
+    '#description' => t('The Worldpay system used to process payments.'),
+    '#required' => TRUE,
+  );
+
+  $form['emails'] = array(
+    '#type' => 'fieldset',
+    '#title' => t('Emails'),
+    '#collapsible' => TRUE,
+    '#collapsed' => FALSE,
+  );
+
+  $form['emails']['booking_notifications'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Booking Notification Email'),
+    '#default_value' => variable_get('booking_notifications', 'info@englishcollegelondon.co.uk'),
+    '#size' => 64,
+    '#maxlength' => 64,
+    '#description' => t("The email address where booking notification emails are sent."),
+    '#required' => TRUE,
+  );
+
+  return system_settings_form($form);
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function ecl_form_alter(&$form, $form_state, $form_id) {
+
+  switch ($form_id) {
+    case 'ecl_worldpay_form' :
+
+      if (variable_get('worldpay_mode') == 1) {
+        $formurl = 'https://secure.worldpay.com/wcc/purchase';
+      } else {
+        $formurl = 'https://secure-test.worldpay.com/wcc/purchase';
+      }
+
+      $form['#action'] = url($formurl, array('external' => true));
+
+      break;
+    }
+}

@@ -1,0 +1,271 @@
+<?php
+
+/**
+ * @file
+ * English College London module install/schema/update hooks.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function ecl_install() {
+
+  $t = get_t();
+
+  // Populate ecl_booking_status table.
+
+  $fields = array(
+    'status_id',
+    'status_label',
+  );
+
+  $query = db_insert('ecl_booking_status')->fields($fields);
+
+  $values = array(
+    array(
+      'status_id' => 0,
+      'status_label' => $t('Pending'),
+    ),
+    array(
+      'status_id' => 1,
+      'status_label' => $t('Confirmed'),
+    ),
+  );
+
+  foreach ($values as $record) {
+    $query->values($record);
+  }
+
+  $query->execute();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function ecl_uninstall() {
+  drupal_uninstall_schema('ecl');
+}
+
+/**
+ * Implements hook_schema().
+ */
+function ecl_schema() {
+
+  $schema = array();
+
+  $schema['ecl_booking_status'] = array(
+    'description' => 'English College Londons Booking Statuses',
+    'fields' => array(
+      'status_id' => array(
+        'description' => 'Primary key: the booking status ID',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'status_label' => array(
+        'description' => 'The booking status label.',
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+    ),
+    'primary key' => array('status_id'),
+  );
+
+  $schema['ecl_bookings'] = array(
+    'description' => 'English College London Course Bookings',
+    'fields' => array(
+      'booking_id' => array(
+        'description' => 'Primary key: the booking ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'status_id' => array(
+        'description' => 'The booking status ID.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'course_id' => array(
+        'description' => 'The ID of the course being booked.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'course_date' => array(
+        'description' => 'The Unix timestamp indicating the date of the course booking.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'total_booking_fee' => array(
+        'description' => 'The total booking fee.',
+        'type' => 'numeric',
+        'precision' => 16,
+        'scale' => 2,
+        'not null' => TRUE,
+        'default' => 0.0,
+      ),
+      'outstanding_fee' => array(
+        'description' => 'Amount outstanding fee.',
+        'type' => 'numeric',
+        'precision' => 16,
+        'scale' => 2,
+        'not null' => TRUE,
+        'default' => 0.0,
+      ),
+      'firstname' => array(
+        'description' => 'The first name of the person booked onto the course.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'lastname' => array(
+        'description' => 'The last name of the person booked onto the course.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'date_of_birth' => array(
+        'description' => 'The date of birth of the person booked onto the course.',
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'gender' => array(
+        'description' => 'The gender of the person booked onto the course.',
+        'type' => 'varchar',
+        'length' => 16,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'nationality' => array(
+        'description' => 'The nationality of the person booked onto the course.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'passport_or_idnumber' => array(
+        'description' => 'The passport or ID number of the person booked onto the course.',
+        'type' => 'varchar',
+        'length' => 96,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'telephone' => array(
+        'description' => 'The phone number of the person booked onto the course.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'email' => array(
+        'description' => 'The email address of the person booked onto the course.',
+        'type' => 'varchar',
+        'length' => 96,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'address1' => array(
+        'description' => 'Address line 1 of the person booked onto the course.',
+        'type' => 'varchar',
+        'length' => 127,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'address2' => array(
+        'description' => 'Address line 2 of the person booked onto the course.',
+        'type' => 'varchar',
+        'length' => 127,
+        'not null' => FALSE,
+        'default' => '',
+      ),
+      'towncity' => array(
+        'description' => 'The town/city of the person booked onto the course.',
+        'type' => 'varchar',
+        'length' => 63,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'region' => array(
+        'description' => 'The region of the person booked onto the course.',
+        'type' => 'varchar',
+        'length' => 63,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'postcode' => array(
+        'description' => 'The postcode of the person booked onto the course.',
+        'type' => 'varchar',
+        'length' => 15,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'country' => array(
+        'description' => 'The country of the person booked onto the course.',
+        'type' => 'varchar',
+        'length' => 15,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'created' => array(
+        'description' => 'The Unix timestamp indicating the time the booking was made.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('booking_id'),
+    'foreign keys' => array(
+      'ecl_booking_status' => array(
+        'table' => 'ecl_booking_status',
+        'columns' => array('status_id' => 'status_id'),
+      ),
+    ),
+  );
+
+  $schema['ecl_payments'] = array(
+    'description' => 'Payment data received from WorldPay',
+    'fields' => array(
+      'payment_id' => array(
+        'description' => 'Primary key: the payment ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'worldpay_data' => array(
+        'description' => 'The data received from WorldPay.',
+        'type' => 'text',
+        'size' => 'normal',
+        'not null' => FALSE,
+      ),
+      'booking_id' => array(
+        'description' => 'The booking ID.',
+        'type' => 'numeric',
+        'precision' => 8,
+        'scale' => 0,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'user_id' => array(
+        'description' => 'The Drupal user ID making the payment.',
+        'type' => 'numeric',
+        'precision' => 8,
+        'scale' => 0,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('payment_id'),
+  );
+
+  return $schema;
+}
