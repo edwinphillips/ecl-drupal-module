@@ -1,8 +1,5 @@
 <?php
 
-module_load_include('inc', 'ecl', 'functions');
-module_load_include('inc', 'ecl', 'forms');
-
 /**
  * Implements hook_permission().
  */
@@ -156,4 +153,75 @@ function ecl_form_alter(&$form, $form_state, $form_id) {
 
       break;
     }
+}
+
+/**
+ * Implements hook_webform_submission_insert().
+ */
+function ecl_webform_submission_insert($node, $submission) {
+
+  // Create a Drupal user if necessary.
+  if (!$account = user_load_by_mail($formelements['email']['value'])) {
+
+    // Generate a random password
+    $password = user_password(8);
+
+    // Set up the user fields
+    $fields = array(
+      'name' => $formelements['email']['value'],
+      'mail' => $formelements['email']['value'],
+      'pass' => $password,
+      'status' => 0,
+      'init' => 'email address',
+      'roles' => array(
+        DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+        4 => 'Student',
+      ),
+    );
+
+    // Create user
+    $account = user_save('', $fields);
+  }
+
+  $formelements = array();
+  for ($i=1; $i<=count($node->webform['components']); $i++) {
+    if ($node->webform['components'][$i]['form_key'] != 'message') {
+      $formelements[$node->webform['components'][$i]['form_key']] = array(
+        'name' => $node->webform['components'][$i]['name'],
+        'value' => $submission->data[$i][0]
+      );
+    }
+  }
+
+  $fields = array(
+    'status_id' => 0,
+    'course_interested' => $formelements['course_interested']['value'],
+    'course_date' => $formelements['course_date']['value'],
+    'total_booking_fee' => 100,
+    'outstanding_fee' => 100,
+    'firstname' => $formelements['firstname']['value'],
+    'lastname' => $formelements['lastname']['value'],
+    'date_of_birth' => $formelements['date_of_birth']['value'],
+    'gender' => $formelements['gender']['value'],
+    'nationality' => $formelements['nationality']['value'],
+    'passport_or_id_number' => $formelements['passport_or_id_number']['value'],
+    'email' => $formelements['email']['value'],
+    'telephone' => $formelements['telephone']['value'],
+    'address1' => $formelements['address1']['value'],
+    'address2' => $formelements['address2']['value'],
+    'towncity' => $formelements['towncity']['value'],
+    'region' => $formelements['region']['value'],
+    'postcode' => $formelements['postcode']['value'],
+    'country' => $formelements['country']['value'],
+    'created' => time(),
+  );
+
+  if (isset($_SESSION['booking_id']) && db_query("SELECT 1 FROM {ecl_bookings} WHERE booking_id = :bid",
+            array(':bid' => $_SESSION['booking_id']))->fetchField()) {
+    $bookingid = db_update('ecl_bookings')->fields($fields)
+            ->condition('booking_id', $_SESSION['booking_id'], '=')->execute();
+  } else {
+    $bookingid = db_insert('ecl_bookings')->fields($fields)->execute();
+    $_SESSION['booking_id'] = $bookingid;
+  }
 }

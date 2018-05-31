@@ -89,12 +89,12 @@ function ecl_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
-      'course_id' => array(
-        'description' => 'The ID of the course being booked.',
-        'type' => 'int',
-        'unsigned' => TRUE,
+      'course_interested' => array(
+        'description' => 'The course being booked.',
+        'type' => 'varchar',
+        'length' => 255,
         'not null' => TRUE,
-        'default' => 0,
+        'default' => '',
       ),
       'course_date' => array(
         'description' => 'The Unix timestamp indicating the date of the course booking.',
@@ -153,8 +153,15 @@ function ecl_schema() {
         'not null' => TRUE,
         'default' => '',
       ),
-      'passport_or_idnumber' => array(
+      'passport_or_id_number' => array(
         'description' => 'The passport or ID number of the person booked onto the course.',
+        'type' => 'varchar',
+        'length' => 96,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'email' => array(
+        'description' => 'The email address of the person booked onto the course.',
         'type' => 'varchar',
         'length' => 96,
         'not null' => TRUE,
@@ -164,13 +171,6 @@ function ecl_schema() {
         'description' => 'The phone number of the person booked onto the course.',
         'type' => 'varchar',
         'length' => 255,
-        'not null' => TRUE,
-        'default' => '',
-      ),
-      'email' => array(
-        'description' => 'The email address of the person booked onto the course.',
-        'type' => 'varchar',
-        'length' => 96,
         'not null' => TRUE,
         'default' => '',
       ),

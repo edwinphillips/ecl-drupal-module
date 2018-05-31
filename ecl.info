@@ -1,6 +1,6 @@
 name = English College London
 description = English College London booking functionality.
-dependencies[] = simple_mail
+dependencies[] = webform
 package = English College London
 version = "7.x - 1.0"
 core = 7.x
