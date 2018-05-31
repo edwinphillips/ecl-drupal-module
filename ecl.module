@@ -160,6 +160,16 @@ function ecl_form_alter(&$form, $form_state, $form_id) {
  */
 function ecl_webform_submission_insert($node, $submission) {
 
+  $formelements = array();
+  foreach ($node->webform['components'] as $key => $value) {
+    if ($value['form_key'] != 'message') {
+      $formelements[$value['form_key']] = array(
+        'name' => $value['name'],
+        'value' => $submission->data[$key][0]
+      );
+    }
+  }
+
   // Create a Drupal user if necessary.
   if (!$account = user_load_by_mail($formelements['email']['value'])) {
 
@@ -183,16 +193,6 @@ function ecl_webform_submission_insert($node, $submission) {
     $account = user_save('', $fields);
   }
 
-  $formelements = array();
-  for ($i=1; $i<=count($node->webform['components']); $i++) {
-    if ($node->webform['components'][$i]['form_key'] != 'message') {
-      $formelements[$node->webform['components'][$i]['form_key']] = array(
-        'name' => $node->webform['components'][$i]['name'],
-        'value' => $submission->data[$i][0]
-      );
-    }
-  }
-
   $fields = array(
     'status_id' => 0,
     'course_interested' => $formelements['course_interested']['value'],
@@ -209,7 +209,7 @@ function ecl_webform_submission_insert($node, $submission) {
     'telephone' => $formelements['telephone']['value'],
     'address1' => $formelements['address1']['value'],
     'address2' => $formelements['address2']['value'],
-    'towncity' => $formelements['towncity']['value'],
+    'town_city' => $formelements['town_city']['value'],
     'region' => $formelements['region']['value'],
     'postcode' => $formelements['postcode']['value'],
     'country' => $formelements['country']['value'],

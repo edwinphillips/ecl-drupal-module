@@ -97,9 +97,16 @@ function ecl_schema() {
         'default' => '',
       ),
       'course_date' => array(
+        'description' => 'The textual representation of the date of the course booking.',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'course_datestamp' => array(
         'description' => 'The Unix timestamp indicating the date of the course booking.',
         'type' => 'int',
-        'not null' => TRUE,
+        'not null' => FALSE,
         'default' => 0,
       ),
       'total_booking_fee' => array(
@@ -188,7 +195,7 @@ function ecl_schema() {
         'not null' => FALSE,
         'default' => '',
       ),
-      'towncity' => array(
+      'town_city' => array(
         'description' => 'The town/city of the person booked onto the course.',
         'type' => 'varchar',
         'length' => 63,
