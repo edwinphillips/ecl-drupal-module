@@ -146,27 +146,6 @@ function ecl_schema() {
         'not null' => TRUE,
         'default' => '',
       ),
-      'gender' => array(
-        'description' => 'The gender of the person booked onto the course.',
-        'type' => 'varchar',
-        'length' => 16,
-        'not null' => TRUE,
-        'default' => '',
-      ),
-      'nationality' => array(
-        'description' => 'The nationality of the person booked onto the course.',
-        'type' => 'varchar',
-        'length' => 255,
-        'not null' => TRUE,
-        'default' => '',
-      ),
-      'passport_or_id_number' => array(
-        'description' => 'The passport or ID number of the person booked onto the course.',
-        'type' => 'varchar',
-        'length' => 96,
-        'not null' => TRUE,
-        'default' => '',
-      ),
       'email' => array(
         'description' => 'The email address of the person booked onto the course.',
         'type' => 'varchar',
