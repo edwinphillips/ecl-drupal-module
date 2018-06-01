@@ -136,26 +136,6 @@ function ecl_admin() {
 }
 
 /**
- * Implements hook_form_alter().
- */
-function ecl_form_alter(&$form, $form_state, $form_id) {
-
-  switch ($form_id) {
-    case 'ecl_worldpay_form' :
-
-      if (variable_get('worldpay_mode') == 1) {
-        $formurl = 'https://secure.worldpay.com/wcc/purchase';
-      } else {
-        $formurl = 'https://secure-test.worldpay.com/wcc/purchase';
-      }
-
-      $form['#action'] = url($formurl, array('external' => true));
-
-      break;
-    }
-}
-
-/**
  * Implements hook_webform_submission_insert().
  */
 function ecl_webform_submission_insert($node, $submission) {
@@ -281,4 +261,192 @@ function ecl_show_course_bookings() {
   );
 
   return $form;
+}
+
+/*
+ * Returns ECL Worldpay Installation Id.
+ *
+ * @return int
+ */
+function ecl_get_worldpay_instid() {
+
+  return 1011812; // <-- TEFL Academy Installation Id.
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function ecl_block_info() {
+
+  return array(
+    'ecl_worldpay' => array(
+      'info' => t('ECL Proceed to Worldpay'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function ecl_block_view($delta='') {
+  $block = array();
+
+  switch($delta) {
+    case 'ecl_worldpay' :
+      $block['content'] = array(
+        drupal_get_form('ecl_worldpay_form'),
+      );
+      $path = drupal_get_path('module', 'ecl');
+      $block['content']['#attached'] = array(
+        'js' => array(
+          array(
+            'type' => 'file',
+            'data' => $path . '/js/worldpay.js',
+          ),
+        ),
+      );
+      break;
+  }
+
+  return $block;
+}
+
+/**
+ * Proceed to Worldpay form
+ *
+ * @param array $form
+ * @param array $form_state
+ * @return array
+ */
+function ecl_worldpay_form($form, &$form_state) {
+  global $base_url;
+  global $base_path;
+
+  $booking = db_select('ecl_bookings', 'b')
+    ->fields('b')
+    ->condition('booking_id', $_SESSION['booking_id'], '=')
+    ->execute()
+    ->fetchAssoc();
+
+  if (variable_get('worldpay_mode') == 1) {
+    $testmode = 0;
+  } else {
+    $testmode = 100;
+  }
+
+  $form['instId'] = array(
+    '#value' => ecl_get_worldpay_instid(),
+    '#type' => 'hidden',
+  );
+
+  $form['testMode'] = array(
+    '#value' => $testmode,
+    '#type' => 'hidden',
+  );
+  $form['cartId'] = array(
+    '#value' => $booking['booking_id'],
+    '#type' => 'hidden',
+  );
+
+  $form['MC_callback'] = array(
+    '#value' => $base_url . $base_path . 'sites/all/modules/custom/ecl/confirm_wp.php',
+    '#type' => 'hidden',
+  );
+
+  $form['amount'] = array(
+    '#value' => $booking['total_booking_fee'],
+    '#type' => 'hidden'
+  );
+
+  $form['currency'] = array(
+    '#value' => 'GBP',
+    '#type' => 'hidden',
+  );
+
+  $form['name'] = array(
+    '#value' => $booking['firstname'] . ' ' . $booking['lastname'],
+    '#type' => 'hidden',
+  );
+
+  $form['desc'] = array(
+    '#value' => 'English language course',
+    '#type' => 'hidden',
+  );
+
+  $form['confirm_url'] = array(
+    '#value' => $base_url . $base_path . 'payment-response',
+    '#type' => 'hidden',
+  );
+
+  $form['cancel_url'] = array(
+    '#value' => $base_url . $base_path . 'payment-cancelled',
+    '#type' => 'hidden',
+  );
+
+  $form['status_url'] = array(
+    '#value' => 'ed@theteflacademy.com', # <-- not sure
+    '#type' => 'hidden',
+  );
+
+  $form['address1'] = array(
+    '#value' => $booking['address1'],
+    '#type' => 'hidden',
+  );
+
+  $form['address2'] = array(
+    '#value' => $booking['address2'],
+    '#type' => 'hidden',
+  );
+
+  $form['town'] = array(
+    '#value' => $booking['town_city'],
+    '#type' => 'hidden',
+  );
+
+  $form['region'] = array(
+   '#value' => $booking['region'],
+   '#type' => 'hidden',
+  );
+
+  $form['postcode'] = array(
+    '#value' => $booking['postcode'],
+    '#type' => 'hidden',
+  );
+
+  $form['country'] = array(
+    '#value' => $booking['country'],
+    '#type' => 'hidden',
+  );
+
+  $form['tel'] = array(
+    '#value' => $booking['telephone'],
+    '#type' => 'hidden',
+  );
+
+  $form['email'] = array(
+    '#value' => $booking['email'],
+    '#type' => 'hidden',
+  );
+
+  return $form;
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function ecl_form_alter(&$form, $form_state, $form_id) {
+
+  switch ($form_id) {
+    case 'ecl_worldpay_form' :
+
+      if (variable_get('worldpay_mode') == 1) {
+        $formurl = 'https://secure.worldpay.com/wcc/purchase';
+      } else {
+        $formurl = 'https://secure-test.worldpay.com/wcc/purchase';
+      }
+
+      $form['#action'] = url($formurl, array('external' => true));
+
+      break;
+    }
 }
