@@ -143,6 +143,15 @@ function ecl_webform_submission_insert($node, $submission) {
   $formelements = array();
   foreach ($node->webform['components'] as $key => $value) {
     if ($value['form_key'] != 'message') {
+      if ($value['form_key'] == 'course_interested') {
+        $query = db_select('field_revision_field_price', 'p');
+        $query->join('node', 'n', 'n.vid = p.revision_id');
+        $result = $query->fields('p', array('field_price_value'))
+            ->condition('n.title', $submission->data[$key][0])
+            ->execute()
+            ->fetchAssoc();
+        $coursefee = $result['field_price_value'];
+      }
       $formelements[$value['form_key']] = array(
         'name' => $value['name'],
         'value' => $submission->data[$key][0]
@@ -177,8 +186,8 @@ function ecl_webform_submission_insert($node, $submission) {
     'status_id' => 0,
     'course_interested' => $formelements['course_interested']['value'],
     'course_date' => $formelements['course_date']['value'],
-    'total_booking_fee' => 100,
-    'outstanding_fee' => 100,
+    'total_booking_fee' => $coursefee,
+    'outstanding_fee' => $coursefee,
     'firstname' => $formelements['firstname']['value'],
     'lastname' => $formelements['lastname']['value'],
     'date_of_birth' => $formelements['date_of_birth']['value'],
