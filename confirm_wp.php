@@ -10,14 +10,10 @@ drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 
 if ($response['transStatus'] == 'Y') {
 
-  // Retrieve the users Drupal account
-  $account = user_load_by_mail($response['email']);
-
   // Write the WorldPay response to the database
   $fields = array(
     'worldpay_data' => json_encode($response),
     'booking_id' => $response['cartId'],
-    'user_id' => $account->uid,
   );
   $paymentid = db_insert('ecl_payments')->fields($fields)->execute();
 

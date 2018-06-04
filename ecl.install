@@ -241,14 +241,6 @@ function ecl_schema() {
         'not null' => TRUE,
         'default' => 0,
       ),
-      'user_id' => array(
-        'description' => 'The Drupal user ID making the payment.',
-        'type' => 'numeric',
-        'precision' => 8,
-        'scale' => 0,
-        'not null' => TRUE,
-        'default' => 0,
-      ),
     ),
     'primary key' => array('payment_id'),
   );
