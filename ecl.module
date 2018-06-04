@@ -375,7 +375,7 @@ function ecl_worldpay_form($form, &$form_state) {
   );
 
   $form['desc'] = array(
-    '#value' => 'English language course',
+    '#value' => "{$booking['course_interested']} on {$booking['course_date']}",
     '#type' => 'hidden',
   );
 
