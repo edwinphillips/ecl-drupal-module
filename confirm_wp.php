@@ -49,11 +49,11 @@ if ($response['transStatus'] == 'Y') {
   $body = "Thanks, your payment for booking ID {$response['cartId']} has been received.";
   simple_mail_send($from, $to, $subject, $body);
 
-  $url = 'payment-confirmation';
+  $url = '/payment-confirmation';
 } else if ($response['rawAuthCode'] == 'C') {
-  $url = 'payment-cancelled';
+  $url = '/payment-cancelled';
 } else {
   $url = '';
 }
 ?>
-<meta http-equiv="refresh" content= "0;URL=<?php echo 'https://staging.englishcollegelondon.co.uk/' . $url; ?>" />
+<meta http-equiv="refresh" content= "0;URL=<?php echo $base_root . $url; ?>" />

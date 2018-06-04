@@ -267,7 +267,7 @@ function ecl_show_course_bookings() {
  */
 function ecl_get_worldpay_instid() {
 
-  return 1011812; // <-- TEFL Academy Installation Id.
+  return 1260047;
 }
 
 /**
