@@ -493,5 +493,10 @@ function ecl_form_alter(&$form, $form_state, $form_id) {
       $form['#action'] = url($formurl, array('external' => true));
 
       break;
+    case 'webform_client_form_90' :
+
+      $form['submitted']['course_date']['#options'] = ecl_course_date_options();
+
+      break;
     }
 }

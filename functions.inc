@@ -100,3 +100,19 @@ function ecl_make_course_booking_payment($bookingid) {
 
   return drupal_get_form('ecl_make_course_booking_payment_form', $bookingid);
 }
+
+/**
+ *
+ * @return type
+ */
+function ecl_course_date_options() {
+
+  return array(
+    'Wednesday, June 6, 2018',
+    'Thursday, June 7, 2018',
+    'Friday, June 8, 2018',
+    'Wednesday, June 13, 2018',
+    'Thursday, June 14, 2018',
+    'Friday, June 15, 2018',
+  );
+}
