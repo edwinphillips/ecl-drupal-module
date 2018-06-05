@@ -89,3 +89,14 @@ function ecl_show_course_booking_details($bookingid) {
 
   return $form;
 }
+
+/**
+ * Returns 'Make Course Booking Payment' form
+ *
+ * @param int $bookingid
+ * @return drupal form
+ */
+function ecl_make_course_booking_payment($bookingid) {
+
+  return drupal_get_form('ecl_make_course_booking_payment_form', $bookingid);
+}

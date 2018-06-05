@@ -1,6 +1,7 @@
 <?php
 
 module_load_include('inc', 'ecl', 'functions');
+module_load_include('inc', 'ecl', 'forms');
 
 /**
  * Implements hook_permission().
@@ -308,6 +309,9 @@ function ecl_block_info() {
     'ecl_worldpay' => array(
       'info' => t('ECL Proceed to Worldpay'),
     ),
+    'ecl_make_payment' => array(
+      'info' => t('ECL Make Worldpay Payment'),
+    ),
   );
 }
 
@@ -328,6 +332,20 @@ function ecl_block_view($delta='') {
           array(
             'type' => 'file',
             'data' => $path . '/js/worldpay.js',
+          ),
+        ),
+      );
+      break;
+    case 'ecl_make_payment' :
+      $block['content'] = array(
+        drupal_get_form('ecl_make_worldpay_payment_form'),
+      );
+      $path = drupal_get_path('module', 'ecl');
+      $block['content']['#attached'] = array(
+        'js' => array(
+          array(
+            'type' => 'file',
+            'data' => $path . '/js/make-worldpay-payment.js',
           ),
         ),
       );
@@ -464,6 +482,7 @@ function ecl_form_alter(&$form, $form_state, $form_id) {
 
   switch ($form_id) {
     case 'ecl_worldpay_form' :
+    case 'ecl_make_worldpay_payment_form' :
 
       if (variable_get('worldpay_mode') == 1) {
         $formurl = 'https://secure.worldpay.com/wcc/purchase';
