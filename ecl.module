@@ -250,8 +250,8 @@ function ecl_webform_submission_insert($node, $submission) {
  */
 function ecl_show_course_bookings() {
 
-  $sql = "SELECT eb.booking_id, eb.course_interested, eb.firstname, eb.lastname, eb.created AS booking_created, ebs.status_label AS status,
-                 total_booking_fee, outstanding_fee
+  $sql = "SELECT eb.booking_id, eb.course_interested, eb.course_date, eb.firstname, eb.lastname,
+                 eb.created AS booking_created, ebs.status_label AS status, total_booking_fee, outstanding_fee
             FROM {ecl_bookings} eb
             JOIN ecl_booking_status ebs ON ebs.status_id = eb.status_id
         ORDER BY booking_id DESC";
@@ -264,9 +264,10 @@ function ecl_show_course_bookings() {
   $markup = '<table>';
   $markup .= '<tr>';
   $markup .= "<th>{$t('Booking ID')}</th>";
-  $markup .= "<th>{$t('Name')}</th>";
-  $markup .= "<th>{$t('Date')}</th>";
+  $markup .= "<th>{$t('Booking Date')}</th>";
   $markup .= "<th>{$t('Course')}</th>";
+  $markup .= "<th>{$t('Course Date')}</th>";
+  $markup .= "<th>{$t('Student Name')}</th>";
   $markup .= "<th>{$t('Total')}</th>";
   $markup .= "<th>{$t('Outstanding')}</th>";
   $markup .= "<th>{$t('Status')}</th>";
@@ -276,9 +277,10 @@ function ecl_show_course_bookings() {
   foreach ($bookings as $booking) {
     $markup .= '<tr>';
     $markup .= "<td>{$booking->booking_id}</td>";
-    $markup .= "<td>{$booking->firstname} {$booking->lastname}</td>";
-    $markup .= '<td>' . date('M j, Y g:i:s A', $booking->booking_created) . '</td>';
+    $markup .= '<td>' . date('F jS Y g:i A', $booking->booking_created) . '</td>';
     $markup .= "<td>{$booking->course_interested}</td>";
+    $markup .= "<td>{$booking->course_date}</td>";
+    $markup .= "<td>{$booking->firstname} {$booking->lastname}</td>";
     $markup .= "<td>&pound;{$booking->total_booking_fee}</td>";
     $markup .= "<td>&pound;{$booking->outstanding_fee}</td>";
     $markup .= "<td>{$booking->status}</td>";
