@@ -39,33 +39,35 @@ function ecl_show_course_booking_details($bookingid) {
   $markup .= '</table>';
   $markup .= '</div>';
 
-  $payments = db_query("SELECT * FROM {ecl_payments} WHERE booking_id = :bookingid", array('bookingid' => $bookingid));
+  $payments = db_query("SELECT * FROM {ecl_payments} WHERE booking_id = :bookingid", array('bookingid' => $bookingid))->fetchAll();
 
-  $markup .= '<div class="table-responsive">';
-  $markup .= '<table class="table table-bordered table-striped">';
-  $markup .= '<thead>';
-  $markup .= '<tr class="info">';
-  $markup .= '<th width="25%">';
-  $markup .= '<p class="text-left" style="margin-bottom: 0;"><strong>Payment ID</strong></p>';
-  $markup .= '</th>';
-  $markup .= '<th width="25%">';
-  $markup .= '<p class="text-left" style="margin-bottom: 0;"><strong>Payment Date/Time</strong></p>';
-  $markup .= '</th>';
-  $markup .= '<th width="25%">';
-  $markup .= '<p class="text-left" style="margin-bottom: 0;"><strong>WorldPay Transaction ID</strong></p>';
-  $markup .= '</th>';
-  $markup .= '<th width="25%">';
-  $markup .= '<p class="text-left" style="margin-bottom: 0;"><strong>Payment Amount</strong></p>';
-  $markup .= '</th>';
-  $markup .= '</tr>';
-  $markup .= '</thead>';
-  $markup .= '<tbody>';
+  if (!empty($payments)) {
+    $markup .= '<div class="table-responsive">';
+    $markup .= '<table class="table table-bordered table-striped">';
+    $markup .= '<thead>';
+    $markup .= '<tr class="info">';
+    $markup .= '<th width="25%">';
+    $markup .= '<p class="text-left" style="margin-bottom: 0;"><strong>Payment ID</strong></p>';
+    $markup .= '</th>';
+    $markup .= '<th width="25%">';
+    $markup .= '<p class="text-left" style="margin-bottom: 0;"><strong>Payment Date/Time</strong></p>';
+    $markup .= '</th>';
+    $markup .= '<th width="25%">';
+    $markup .= '<p class="text-left" style="margin-bottom: 0;"><strong>WorldPay Transaction ID</strong></p>';
+    $markup .= '</th>';
+    $markup .= '<th width="25%">';
+    $markup .= '<p class="text-left" style="margin-bottom: 0;"><strong>Payment Amount</strong></p>';
+    $markup .= '</th>';
+    $markup .= '</tr>';
+    $markup .= '</thead>';
+    $markup .= '<tbody>';
+  }
 
-  while ($payment = $payments->fetchAssoc()) {
-    $worldpaydata = json_decode($payment['worldpay_data']);
+  foreach ($payments as $payment) {
+    $worldpaydata = json_decode($payment->worldpay_data);
     $markup .= '<tr>';
     $markup .= '<td>';
-    $markup .= $payment['payment_id'];
+    $markup .= $payment->payment_id;
     $markup .= '</td>';
     $markup .= '<td>';
     $markup .= date('M j, Y g:i:s A', $worldpaydata->transTime / 1000);
@@ -79,9 +81,11 @@ function ecl_show_course_booking_details($bookingid) {
     $markup .= '</tr>';
   }
 
-  $markup .= '</tbody>';
-  $markup .= '</table>';
-  $markup .= '</div>';
+  if (!empty($payments)) {
+    $markup .= '</tbody>';
+    $markup .= '</table>';
+    $markup .= '</div>';
+  }
 
   $form['bookingdetails'] = array(
     '#markup' => $markup,
