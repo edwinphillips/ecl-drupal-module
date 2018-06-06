@@ -46,7 +46,7 @@ function ecl_show_course_booking_details($bookingid) {
   $markup .= '<p class="text-left"><strong>Date of birth:</strong></p>';
   $markup .= '</td>';
   $markup .= '<td width="32%">';
-  $markup .= '<p class="text-left">' . $booking['date_of_birth'] . '</p>';
+  $markup .= '<p class="text-left">' . date('F jS, Y', strtotime($booking['date_of_birth'])) . '</p>';
   $markup .= '</td>';
   $markup .= '</tr>';
   $markup .= '<tr>';
@@ -54,7 +54,7 @@ function ecl_show_course_booking_details($bookingid) {
   $markup .= '<p class="text-left"><strong>Email:</strong></p>';
   $markup .= '</td>';
   $markup .= '<td width="32%">';
-  $markup .= '<p class="text-left">' . $booking['email'] . '</p>';
+  $markup .= '<p class="text-left"><a href="mailto:' . $booking['email'] . '">' . $booking['email'] . '</a></p>';
   $markup .= '</td>';
   $markup .= '</tr>';
   $markup .= '<tr>';
@@ -95,7 +95,7 @@ function ecl_show_course_booking_details($bookingid) {
   $markup .= '<p class="text-left">' . $booking['course_date'] . '</p>';
   $markup .= '</td>';
   $markup .= '<td>';
-  $markup .= '<p class="text-left">' . $booking['created'] . '</p>';
+  $markup .= '<p class="text-left">' . date('F jS, Y g:i A', $booking['created']) . '</p>';
   $markup .= '</td>';
   $markup .= '<td class="text-left">';
   $markup .= '<p>&pound;' . $booking['total_booking_fee'] . '</p>';
@@ -155,6 +155,10 @@ function ecl_show_course_booking_details($bookingid) {
 
   $form['bookingdetails'] = array(
     '#markup' => $markup,
+  );
+
+  $form['back_button'] = array(
+    '#markup' => "<input type='button' class='form-submit' value='Back' onclick=\"window.location='/admin/settings/ecl/coursebookings';\" />",
   );
 
   return $form;
