@@ -102,17 +102,30 @@ function ecl_make_course_booking_payment($bookingid) {
 }
 
 /**
+ * Returns start date options
  *
- * @return type
+ * @return array
  */
 function ecl_course_date_options() {
 
-  return array(
-    'Wednesday, June 6, 2018',
-    'Thursday, June 7, 2018',
-    'Friday, June 8, 2018',
-    'Wednesday, June 13, 2018',
-    'Thursday, June 14, 2018',
-    'Friday, June 15, 2018',
-  );
+  $nextwednesday = strtotime('next wednesday');
+  $nextthursday = strtotime('next thursday');
+  $nextfriday = strtotime('next friday');
+
+  $nextdate = min(array($nextwednesday, $nextthursday, $nextfriday));
+
+  $firstdate = mktime(0, 0, 0, date('n', $nextdate), date('j', $nextdate), date('Y', $nextdate));
+  $lastdate = strtotime('+26 week', $firstdate);
+
+  $dateoptions = array();
+  $date = $firstdate;
+
+  while ($date < $lastdate) {
+    if (in_array(date('w', $date), array(3, 4, 5))) {
+      $dateoptions[date('l, F jS, Y', $date)] = date('l, F jS, Y', $date);
+    }
+    $date = strtotime('+1 day', $date);
+  }
+
+  return $dateoptions;
 }
