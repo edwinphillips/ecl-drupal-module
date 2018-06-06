@@ -252,7 +252,7 @@ function ecl_webform_submission_insert($node, $submission) {
   $markup .= '<p>Your course details are provided below. If you have any questions or concerns before the start date of your course then please do not hesitate to contact us.</p>';
   $markup .= '<table>';
   $markup .= '<tr>';
-  $markup .= '<td>Student Name:</td>';
+  $markup .= '<td>Name:</td>';
   $markup .= "<td>{$formelements['firstname']['value']} {$formelements['lastname']['value']}</td>";
   $markup .= '</tr>';
   $markup .= '<tr>';
@@ -297,7 +297,7 @@ function ecl_webform_submission_insert($node, $submission) {
   $markup .= '</td>';
   $markup .= '</tr>';
   $markup .= '<tr>';
-  $markup .= '<td style="padding-top:20px;padding-bottom:20px"><a href="' . $base_root . '/"><img src="' . $base_root . '/sites/default/files/styles/logo__265x45_/public/logo-theme-upside_1.png" alt="English College London" style="display:block" width="170" height="52"></a></td>';
+  $markup .= '<td style="padding-top:20px;padding-bottom:20px"><a href="' . $base_root . '/"><img src="' . $base_root . '/sites/all/modules/custom/ecl/img/ecl_logo.jpg" alt="English College London" style="display:block" width="200" height="200"></a></td>';
   $markup .= '</tr>';
   $markup .= '<tr>';
   $markup .= '<td style="padding-top:10px;padding-bottom:6px" valign="middle">';
