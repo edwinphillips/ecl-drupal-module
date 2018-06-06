@@ -246,7 +246,8 @@ function ecl_webform_submission_insert($node, $submission) {
   $from = 'info@englishcollegelondon.co.uk';
   $to = $formelements['email']['value'];
   $subject = 'Booking Confirmation from English College London';
-  $markup  = '<h1>Booking Confirmation from English College London</h1>';
+  $markup  = '<img src="' . $base_root . '/sites/all/modules/custom/ecl/img/ecl_logo.jpg" alt="English College London" style="display:block" width="125" height="125"/>';
+  $markup .= '<h1>Booking Confirmation from English College London</h1>';
   $markup .= '<p>Thank you for enrolling on one of our courses. This email is confirmation of your booking.</p>';
   $markup .= "<p>Your booking ID is #{$bookingid}.</p>";
   $markup .= '<p>Your course details are provided below. If you have any questions or concerns before the start date of your course then please do not hesitate to contact us.</p>';
@@ -295,9 +296,6 @@ function ecl_webform_submission_insert($node, $submission) {
   $markup .= '<tr>';
   $markup .= '<span style="color:#333333;font-size:10pt;font-family:Calibri">W: <a href="' . $base_root . '/" style="color:#06c">www.englishcollegelondon.co.uk</a></span>';
   $markup .= '</td>';
-  $markup .= '</tr>';
-  $markup .= '<tr>';
-  $markup .= '<td style="padding-top:20px;padding-bottom:20px"><a href="' . $base_root . '/"><img src="' . $base_root . '/sites/all/modules/custom/ecl/img/ecl_logo.jpg" alt="English College London" style="display:block" width="200" height="200"></a></td>';
   $markup .= '</tr>';
   $markup .= '<tr>';
   $markup .= '<td style="padding-top:10px;padding-bottom:6px" valign="middle">';
