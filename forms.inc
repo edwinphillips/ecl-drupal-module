@@ -84,25 +84,6 @@ function ecl_make_course_booking_payment_form_submit($form, &$form_state) {
   }
 }
 
-
-/**
- * Make course payment form submit
- *
- * @param array $form
- * @param array $form_state
- */
-function castleschool_make_course_booking_payment_form_submit($form, &$form_state) {
-
-  $_SESSION['booking_id'] = $form_state['input']['booking_id'];
-  $_SESSION['payment_amount'] = $form_state['input']['payment_amount'];
-
-  if (variable_get('online_payment_functionality', 0) == 1) {
-      $form_state['redirect'] = 'make-worldpay-payment';
-  } else {
-      $form_state['redirect'] = 'admin/settings/castleschool/coursebookings';
-  }
-}
-
 /**
  * Make custom payment to Worldpay form.
  *
