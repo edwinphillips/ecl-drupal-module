@@ -321,6 +321,9 @@ function ecl_block_info() {
     'ecl_worldpay' => array(
       'info' => t('ECL Proceed to Worldpay'),
     ),
+    'ecl_confirmation' => array(
+      'info' => t('ECL Payment Confirmation'),
+    ),
     'ecl_make_payment' => array(
       'info' => t('ECL Make Worldpay Payment'),
     ),
@@ -361,6 +364,12 @@ function ecl_block_view($delta='') {
           ),
         ),
       );
+      break;
+    case 'ecl_confirmation' :
+      $block['content'] = array(
+        '#markup' => ecl_payment_confirmation_content($_SESSION['booking_id']),
+      );
+      unset($_SESSION['booking_id']);
       break;
   }
 

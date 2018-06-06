@@ -108,6 +108,20 @@ function ecl_make_course_booking_payment($bookingid) {
  */
 function ecl_course_date_options() {
 
+  $defaultplaces = variable_get('places_on_courses', '20');
+
+  $sql = "SELECT course_date, COUNT(course_date) AS confirmed_bookings
+            FROM ecl_bookings
+           WHERE status_id = :status_id
+        GROUP BY course_date";
+  $query = db_query($sql, array('status_id' => 1));
+  $bookings = $query->fetchAll();
+
+  $availability = array();
+  foreach ($bookings as $booking) {
+    $availability[$booking->course_date] = $defaultplaces - $booking->confirmed_bookings;
+  }
+
   $nextwednesday = strtotime('next wednesday');
   $nextthursday = strtotime('next thursday');
   $nextfriday = strtotime('next friday');
@@ -122,10 +136,29 @@ function ecl_course_date_options() {
 
   while ($date < $lastdate) {
     if (in_array(date('w', $date), array(3, 4, 5))) {
-      $dateoptions[date('l, F jS, Y', $date)] = date('l, F jS, Y', $date);
+      $formatteddate = date('l, F jS, Y', $date);
+      $placesavailable = (isset($availability[$formatteddate])) ? $availability[$formatteddate] : $defaultplaces;
+      $dateoptions[$formatteddate] = $formatteddate . " ({$placesavailable} places available)";
     }
     $date = strtotime('+1 day', $date);
   }
 
   return $dateoptions;
+}
+
+/**
+ * Returns HTML to populate the payment confirmation block.
+ *
+ * @param int $bookingid The booking Id
+ * @return string
+ */
+function ecl_payment_confirmation_content($bookingid) {
+
+  if (!empty($bookingid)) {
+    $markup = "<p>Your payment for booking Id {$bookingid} has been confirmed.</p>";
+  } else {
+    $markup = "<p>No booking Id found.</p>";
+  }
+
+  return $markup;
 }
