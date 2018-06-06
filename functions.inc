@@ -8,20 +8,80 @@
  */
 function ecl_show_course_booking_details($bookingid) {
 
-  $sql = "SELECT eb.course_interested, eb.course_date, eb.total_booking_fee
-            FROM ecl_bookings eb
-           WHERE eb.booking_id = :bookingid";
+  $sql = "SELECT firstname, lastname, date_of_birth, email, telephone, address1, address2, town_city,
+                 region, postcode, country, created, course_interested, course_date, total_booking_fee
+            FROM ecl_bookings
+           WHERE booking_id = :bookingid";
   $query = db_query($sql, array('bookingid' => $bookingid));
   $booking = $query->fetchAssoc();
 
-  $markup  = '<div class="table-responsive">';
+  $markup  = '';
+  $markup .= '<div class="table-responsive">';
   $markup .= '<table class="table table-bordered table-striped">';
   $markup .= '<thead>';
   $markup .= '<tr class="info">';
-  $markup .= '<th width="65%">';
+  $markup .= '<th colspan="4" width="100%">';
+  $markup .= '<p class="text-left" style="margin-bottom: 0;"><strong>Student</strong></p>';
+  $markup .= '</th>';
+  $markup .= '</tr>';
+  $markup .= '</thead>';
+  $markup .= '<tbody>';
+  $markup .= '<tr>';
+  $markup .= '<td width="18%">';
+  $markup .= '<p class="text-left"><strong>Name:</strong></p>';
+  $markup .= '</td>';
+  $markup .= '<td width="32%">';
+  $markup .= '<p class="text-left">' . $booking['firstname'] . ' ' . $booking['lastname'] . '</p>';
+  $markup .= '</td>';
+  $markup .= '<td width="18%" rowspan="4" style="vertical-align:top;">';
+  $markup .= '<p class="text-left"><strong>Address:</strong></p>';
+  $markup .= '</td>';
+  $markup .= '<td width="32%" rowspan="4" style="vertical-align:top;">';
+  $markup .= '<p class="text-left">' . $booking['address1'] . '<br/>' . $booking['address2'] . '<br/>'
+          . $booking['town_city'] . '<br/>' . $booking['region'] . '<br/>' . $booking['postcode'] . '<br/>' . $booking['country'] . '</p>';
+  $markup .= '</td>';
+  $markup .= '</tr>';
+  $markup .= '<tr>';
+  $markup .= '<td width="18%">';
+  $markup .= '<p class="text-left"><strong>Date of birth:</strong></p>';
+  $markup .= '</td>';
+  $markup .= '<td width="32%">';
+  $markup .= '<p class="text-left">' . $booking['date_of_birth'] . '</p>';
+  $markup .= '</td>';
+  $markup .= '</tr>';
+  $markup .= '<tr>';
+  $markup .= '<td width="18%">';
+  $markup .= '<p class="text-left"><strong>Email:</strong></p>';
+  $markup .= '</td>';
+  $markup .= '<td width="32%">';
+  $markup .= '<p class="text-left">' . $booking['email'] . '</p>';
+  $markup .= '</td>';
+  $markup .= '</tr>';
+  $markup .= '<tr>';
+  $markup .= '<td width="18%">';
+  $markup .= '<p class="text-left"><strong>Telephone:</strong></p>';
+  $markup .= '</td>';
+  $markup .= '<td width="32%">';
+  $markup .= '<p class="text-left">' . $booking['telephone'] . '</p>';
+  $markup .= '</td>';
+  $markup .= '</tr>';
+  $markup .= '</tbody>';
+  $markup .= '</table>';
+  $markup .= '</div>';
+  $markup .= '<div class="table-responsive">';
+  $markup .= '<table class="table table-bordered table-striped">';
+  $markup .= '<thead>';
+  $markup .= '<tr class="info">';
+  $markup .= '<th width="25%">';
   $markup .= '<p class="text-left" style="margin-bottom: 0;"><strong>Course</strong></p>';
   $markup .= '</th>';
-  $markup .= '<th class="price" style="text-align: right;" width="35%">';
+  $markup .= '<th width="25%">';
+  $markup .= '<p class="text-left" style="margin-bottom: 0;"><strong>Course Date</strong></p>';
+  $markup .= '</th>';
+  $markup .= '<th width="25%">';
+  $markup .= '<p class="text-left" style="margin-bottom: 0;"><strong>Booking Made</strong></p>';
+  $markup .= '</th>';
+  $markup .= '<th width="25%">';
   $markup .= '<p style="margin-bottom: 0;"><strong>Price</strong></p>';
   $markup .= '</th>';
   $markup .= '</tr>';
@@ -29,9 +89,15 @@ function ecl_show_course_booking_details($bookingid) {
   $markup .= '<tbody>';
   $markup .= '<tr>';
   $markup .= '<td>';
-  $markup .= '<p class="text-left">' . $booking['course_interested'] . ' - ' . $booking['course_date'] . '</p>';
+  $markup .= '<p class="text-left">' . $booking['course_interested'] . '</p>';
   $markup .= '</td>';
-  $markup .= '<td class="price" style="text-align: right;">';
+  $markup .= '<td>';
+  $markup .= '<p class="text-left">' . $booking['course_date'] . '</p>';
+  $markup .= '</td>';
+  $markup .= '<td>';
+  $markup .= '<p class="text-left">' . $booking['created'] . '</p>';
+  $markup .= '</td>';
+  $markup .= '<td class="text-left">';
   $markup .= '<p>&pound;' . $booking['total_booking_fee'] . '</p>';
   $markup .= '</td>';
   $markup .= '</tr>';
