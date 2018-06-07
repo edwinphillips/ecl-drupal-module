@@ -37,8 +37,12 @@ function ecl_show_course_booking_details($bookingid) {
   $markup .= '<p class="text-left"><strong>Address:</strong></p>';
   $markup .= '</td>';
   $markup .= '<td width="32%" rowspan="4" style="vertical-align:top;">';
-  $markup .= '<p class="text-left">' . $booking['address1'] . '<br/>' . $booking['address2'] . '<br/>'
-          . $booking['town_city'] . '<br/>' . $booking['region'] . '<br/>' . $booking['postcode'] . '<br/>' . $booking['country'] . '</p>';
+  $address = $booking['address1'] . '<br/>';
+  if ($booking['address2'] != '') {
+    $address .= $booking['address2'] . '<br/>';
+  }
+  $address .= $booking['town_city'] . '<br/>' . $booking['region'] . '<br/>' . $booking['postcode'] . '<br/>' . $booking['country'];
+  $markup .= '<p class="text-left">' . $address . '</p>';
   $markup .= '</td>';
   $markup .= '</tr>';
   $markup .= '<tr>';
